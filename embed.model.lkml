@@ -14,6 +14,7 @@ explore: locations {
 }
 
 explore: review_invitations {
+  label: "Custom Reports - Reputation"
   access_filter: {
     field: locations.organization_id
     user_attribute: organization_id
