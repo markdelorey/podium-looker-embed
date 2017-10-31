@@ -7,49 +7,6 @@ view: nps_invitations {
     sql: ${TABLE}.id ;;
   }
 
-  dimension_group: _sdc_batched {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_batched_at ;;
-  }
-
-  dimension_group: _sdc_received {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_received_at ;;
-  }
-
-  dimension: _sdc_sequence {
-    type: number
-    sql: ${TABLE}._sdc_sequence ;;
-  }
-
-  dimension: _sdc_table_version {
-    type: number
-    sql: ${TABLE}._sdc_table_version ;;
-  }
-
-  dimension: api_client_id {
-    type: number
-    sql: ${TABLE}.api_client_id ;;
-  }
-
   dimension: customer_name {
     type: string
     sql: ${TABLE}.customer_name ;;
@@ -63,20 +20,6 @@ view: nps_invitations {
   dimension: external_customer_id {
     type: number
     sql: ${TABLE}.external_customer_id ;;
-  }
-
-  dimension_group: inserted {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.inserted_at ;;
   }
 
   dimension: location_id {
@@ -108,22 +51,9 @@ view: nps_invitations {
     sql: ${TABLE}.sent_via ;;
   }
 
-  dimension_group: updated {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.updated_at ;;
-  }
-
-  measure: count {
+  measure: invites {
     type: count
     drill_fields: [id, customer_name, nps_responses.count]
   }
+
 }

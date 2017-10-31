@@ -7,50 +7,12 @@ view: nps_responses {
     sql: ${TABLE}.id ;;
   }
 
-  dimension_group: _sdc_batched {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_batched_at ;;
-  }
-
-  dimension_group: _sdc_received {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}._sdc_received_at ;;
-  }
-
-  dimension: _sdc_sequence {
-    type: number
-    sql: ${TABLE}._sdc_sequence ;;
-  }
-
-  dimension: _sdc_table_version {
-    type: number
-    sql: ${TABLE}._sdc_table_version ;;
-  }
-
   dimension: comment {
     type: string
     sql: ${TABLE}.comment ;;
   }
 
-  dimension_group: inserted {
+  dimension_group: received {
     type: time
     timeframes: [
       raw,
@@ -64,7 +26,7 @@ view: nps_responses {
     sql: ${TABLE}.inserted_at ;;
   }
 
-  dimension: ltr {
+  dimension: response {
     type: number
     sql: ${TABLE}.ltr ;;
   }
@@ -75,22 +37,34 @@ view: nps_responses {
     sql: ${TABLE}.nps_invitation_id ;;
   }
 
-  dimension_group: updated {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.updated_at ;;
+  dimension: nps_bucket {
+    type: string
+    sql: CASE WHEN ${response} >= 9 THEN 'Promoter' WHEN ${response} <= 6 THEN 'Detractor' ELSE 'Passive' END ;;
   }
 
-  measure: count {
+  measure: promoters {
+    type: count
+    filters: {
+      field: response
+      value: ">= 9"
+    }
+  }
+
+  measure: responses {
     type: count
     drill_fields: [id, nps_invitations.id, nps_invitations.customer_name]
+  }
+
+  measure: detractors {
+    type: count
+    filters: {
+      field: response
+      value: "<= 6"
+    }
+  }
+
+  measure: nps {
+    type: number
+    sql: 100 * (${promoters} - ${detractors}) / ${responses} ;;
   }
 }
