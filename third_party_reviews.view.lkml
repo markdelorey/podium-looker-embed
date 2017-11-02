@@ -1,4 +1,4 @@
-view: third_party_reviews {
+view: reviews {
   sql_table_name: review_rocket.third_party_reviews ;;
 
   dimension: third_party_review_id {
@@ -63,8 +63,28 @@ view: third_party_reviews {
     sql: ${TABLE}.site_name ;;
   }
 
-  measure: count {
-    type: count
+  dimension_group: reporting_date {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: CASE WHEN ${TABLE}.review_invitation_id IS NULL ${TABLE}.publish_date ELSE review_invitations.sent_at END ;;
+}
+
+  measure: average_rating {
+    type: average
+    sql: ${rating} ;;
+  }
+
+  measure: review_count {
+    type: count_distinct
+    sql: ${third_party_review_id} ;;
     drill_fields: [detail*]
   }
 

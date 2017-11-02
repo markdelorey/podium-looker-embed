@@ -97,8 +97,9 @@ view: review_invitations {
     sql: ${TABLE}.user_id ;;
   }
 
-  measure: count {
-    type: count
+  measure: invite_count {
+    type: count_distinct
+    sql: ${id};;
     drill_fields: [detail*]
   }
 
